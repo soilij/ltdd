@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Lap03WebBanHang.Models.Category>
+
+<div class="sidebar">
+    <h4>Danh Mục Sản Phẩm</h4>
+    <ul>
+        @foreach (var category in Model)
+        {
+            <li><a href="@Url.Action("ProductsByCategory", "Product", new { categoryId = category.Id })">@category.Name</a></li>
+        }
+    </ul>
+</div>

@@ -1,0 +1,22 @@
+﻿@* @model Lap03WebBanHang.Models.Category
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title">Thêm loại sản phẩm</h2>
+                    <form asp-action="AddCategory" method="post">
+                        <div class="mb-3">
+                            <label for="categoryName" class="form-label">Tên loại sản phẩm</label>
+                            <input type="text" id="categoryName" name="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Thêm loại sản phẩm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+ *@

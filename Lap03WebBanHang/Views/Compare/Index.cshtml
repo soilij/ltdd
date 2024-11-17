@@ -1,0 +1,118 @@
+﻿@* @model Lap03WebBanHang.Controllers.ProductComparisonViewModel
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+<h2>Danh sách sản phẩm</h2>
+
+<div style="float: left; width: 50%;">
+    <div>
+        <label for="search1">Tìm kiếm sản phẩm 1:</label>
+        <input type="text" id="search1" name="search1">
+        <div id="search1Suggestions"></div> <!-- Hiển thị gợi ý tìm kiếm -->
+    </div>
+
+    @if (Model != null && Model.Product1 != null && Model.Product1.Count() > 0)
+    {
+        <h3>Sản phẩm 1</h3>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Mô tả</th>
+                <th>Giá</th>
+            </tr>
+            @foreach (var product in Model.Product1)
+            {
+                <tr>
+                    <td>@product.Id</td>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price</td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p>Không có sản phẩm nào để hiển thị.</p>
+    }
+</div>
+
+<div style="float: right; width: 50%;">
+    <div>
+        <label for="search2">Tìm kiếm sản phẩm 2:</label>
+        <input type="text" id="search2" name="search2">
+        <div id="search2Suggestions"></div> <!-- Hiển thị gợi ý tìm kiếm -->
+    </div>
+
+    @if (Model != null && Model.Product2 != null && Model.Product2.Count() > 0)
+    {
+        <h3>Sản phẩm 2</h3>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Tên</th>
+                <th>Mô tả</th>
+                <th>Giá</th>
+            </tr>
+            @foreach (var product in Model.Product2)
+            {
+                <tr>
+                    <td>@product.Id</td>
+                    <td>@product.Name</td>
+                    <td>@product.Description</td>
+                    <td>@product.Price</td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p>Không có sản phẩm nào để hiển thị.</p>
+    }
+</div>
+
+@section scripts {
+    <script>
+
+        $(function () {
+            $("#search1").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Search/ProductSearch",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            query: request.term
+                        },
+                        success: function (data) {
+                            response(data);
+                        }
+                    });
+                },
+                minLength: 2
+            });
+
+            // Xử lý sự kiện khi người dùng nhập trong ô tìm kiếm của bảng 1
+            $("#search1").on("input", function () {
+                var searchTerm = $(this).val();
+                // Gửi yêu cầu Ajax để lấy gợi ý từ server
+                $.ajax({
+                    url: "/Search/ProductSearch",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        query: searchTerm
+                    },
+                    success: function (data) {
+                        // Hiển thị gợi ý trong ô tìm kiếm của bảng 1
+                        var suggestions = data.map(function (item) {
+                            return "<li>" + item + "</li>";
+                        });
+                        $("#search1Suggestions").html("<ul>" + suggestions.join("") + "</ul>");
+                    }
+                });
+            });
+        });
+    </script>
+}
+ *@

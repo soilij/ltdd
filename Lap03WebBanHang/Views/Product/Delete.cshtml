@@ -1,0 +1,15 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Lap03WebBanHang.Models.Product
+
+<h2>Xóa sản phẩm</h2>
+
+<form asp-action="DeleteConfirmed" method="post">
+	<input type="hidden" asp-for="Id" />
+	<p>Bạn có chắc muốn xóa sản phẩm này không @Model.Name?</p>
+	<button type="submit" class="btn btn-danger">Xóa</button>
+</form>
+
+
+

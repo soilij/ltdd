@@ -1,0 +1,42 @@
+﻿@model Lap03WebBanHang.Models.Category
+
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1 id ="changingTitle" class="text-center" style="font-size: 46px; line-height: 54px; color: #222;">Thêm loại sản phẩm</h1>
+            <hr />
+            <script>
+                // Đợi cho trang được tải xong
+                document.addEventListener("DOMContentLoaded", function () {
+                    // Lấy phần tử tiêu đề cần thay đổi màu
+                    var changingTitle = document.getElementById("changingTitle");
+
+                    // Thêm lớp 'changing' để kích hoạt animation
+                    changingTitle.classList.add("changing");
+                });
+            </script>
+            <form asp-action="Add" class="mb-3">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label">Tên loại sản phẩm</label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                    <a asp-action="Index" class="btn btn-secondary">Quay trở về</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Thống kê doanh thu</title>
+    <link href="https://cdn.jsdelivr.net/npm/chart.js" rel="stylesheet">
+   <style>
+    /* CSS for fadeIn effect */
+     fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    .fadeIn {
+        animation: fadeIn 1s ease-in-out;
+    }
+</style>
+
+</head>
+<body>
+    <h1>Thống kê doanh thu</h1>
+    <div>
+        <canvas id="revenueChart" style="height: 400px; width: 800px;"></canvas>
+    </div>
+
+    <div>
+        <h2>Bảng số liệu</h2>
+        <table id="dataTable" class="table">
+            <thead>
+                <tr>
+                    <th>Ngày</th>
+                    <th>Doanh thu</th>
+                    <th>% Tăng giảm</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Dữ liệu sẽ được thêm vào đây bằng JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Function to fetch data from the server
+            function fetchData() {
+                $.ajax({
+                    url: '/Thongke/RevenueByDay', // Sử dụng URL tĩnh
+                    type: 'POST',
+                    success: function (data) {
+                        // Convert date strings to Date objects and sort by date
+                        data.forEach(function (item, index) {
+                            item.date = new Date(item.date);
+                            if (index > 0) {
+                                var previousRevenue = data[index - 1].totalRevenue;
+                                var percentageChange = ((item.totalRevenue - previousRevenue) / previousRevenue) * 100;
+                                item.percentageChange = percentageChange.toFixed(2);
+                            } else {
+                                item.percentageChange = '-';
+                            }
+                        });
+                        data.sort(function (a, b) {
+                            return a.date - b.date;
+                        });
+
+                        renderChart(data);
+                        updateTable(data);
+
+                        // Add fadeIn effect to table
+                        $('#dataTable').addClass('fadeIn');
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+
+            // Function to render the chart
+            function renderChart(data) {
+                var dates = [];
+                var revenues = [];
+
+                // Extracting data for chart
+                for (var i = 0; i < data.length; i++) {
+                    dates.push(data[i].date);
+                    revenues.push(data[i].totalRevenue);
+                }
+
+                var ctx = document.getElementById('revenueChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Doanh thu theo ngày',
+                            data: revenues,
+                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            yAxes: [{
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }]
+                        }
+                    }
+                });
+            }
+
+            // Function to update the table
+            function updateTable(data) {
+                var tableBody = $('#tableBody');
+                tableBody.empty();
+
+                for (var i = 0; i < data.length; i++) {
+                    var row = $('<tr>');
+                    row.append($('<td>').text(data[i].date.toLocaleDateString()));
+                    row.append($('<td>').text(data[i].totalRevenue));
+                    var percentageChange = data[i].percentageChange;
+                    var arrow = '';
+                    if (percentageChange !== '-') {
+                        arrow = percentageChange > 0 ? '↑' : '↓';
+                        percentageChange = Math.abs(percentageChange) + '%';
+                    }
+                    row.append($('<td>').text(percentageChange + ' ' + arrow));
+                    tableBody.append(row);
+                }
+            }
+
+            // Call the fetchData function when the document is ready
+            fetchData();
+        });
+    </script>
+</body>
+</html>

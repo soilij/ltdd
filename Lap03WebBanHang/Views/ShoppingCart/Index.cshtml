@@ -1,0 +1,116 @@
+﻿<div class="container mt-5">
+
+<style>
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        h2 {
+            font-size: 46px;
+            line-height: 54px;
+            color: #222;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .table th,
+            .table td {
+                padding: 12px;
+                text-align: left;
+            }
+
+            .table th {
+                background-color: #f2f2f2;
+                font-weight: bold;
+            }
+
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: #f9f9f9;
+        }
+
+        .quantity-input {
+            width: 60px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: #fff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #0056b3;
+            }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+            color: #fff;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+                border-color: #545b62;
+            }
+
+</style>
+    <h2 id="changingTitle" class="text-center" style="font-size: 46px; line-height: 54px; color: #222;">Đơn hàng của bạn</h2>
+    <script>
+        // Đợi cho trang được tải xong
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lấy phần tử tiêu đề cần thay đổi màu
+            var changingTitle = document.getElementById("changingTitle");
+
+            // Thêm lớp 'changing' để kích hoạt animation
+            changingTitle.classList.add("changing");
+        });
+    </script>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Tên sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                    <th>Tổng giá</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td>
+                            <!-- Nút chọn số lượng -->
+                            <input type="number" class="quantity-input" value="@item.Quantity" min="1" max="100">
+                        </td>
+                        <td>@item.Price</td>
+                        <td>@(item.Price * item.Quantity)</td>
+                        <td>
+                            <form asp-action="RemoveFromCart" asp-route-productId=" @item.ProductId">
+                                <button type="submit" class="btn btn-danger">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="text-center">
+        <a asp-controller="ShoppingCart" asp-action="Checkout" class="btn btn-primary">Đặt hàng</a>
+        <a asp-controller="Product" asp-action="Index" class="btn btn-secondary">Tiếp tục mua hàng</a>
+    </div>
+</div>

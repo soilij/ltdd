@@ -1,0 +1,56 @@
+﻿@model Lap03WebBanHang.Models.Product
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card border-primary">
+                <div class="card-body">
+                    <h2 class="card-title text-primary">@Model.Name</h2>
+                    <div>
+                        <h3 class="card-subtitle mb-2 text-muted">Price: @Model.Price</h3>
+                        <p class="card-text">@Model.Description</p>
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="@Model.ImageUrl" alt="Product Image" class="img-fluid mb-3" style="max-width: 200px;" />
+                        }
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a asp-action="Index" class="btn btn-secondary" style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06); transition: box-shadow 0.3s;">Quay trở về</a>
+                        <button class="btn btn-primary compare-btn" onclick="compareWithOther('@Model.Id')" style="box-shadow: 0 5px 15px rgba(0, 0, 0, 0.06); transition: box-shadow 0.3s;">So sánh với sản phẩm khác</button>
+                        <div id="similarProducts">
+                            <!-- Danh sách sản phẩm cùng loại sẽ được hiển thị ở đây -->
+                        </div>
+                        <script>
+                            function compareWithOther(productId) {
+                                // Gửi yêu cầu Ajax để lấy danh sách sản phẩm cùng loại
+                                $.ajax({
+                                    url: '/Product/GetSimilarProducts',
+                                    type: 'GET',
+                                    data: { productId: productId },
+                                    success: function (response) {
+                                        var similarProductsHtml = '<h3>Sản phẩm cùng loại</h3><ul>';
+                                        response.forEach(function (product) {
+                                            similarProductsHtml += '<li><a href="#" onclick="compareProducts(' + productId + ', ' + product.Id + ')">' + product.Name + '</a></li>';
+                                        });
+                                        similarProductsHtml += '</ul>';
+                                        // Hiển thị danh sách sản phẩm cùng loại trên view
+                                        $('#similarProducts').html(similarProductsHtml);
+                                    },
+                                    error: function (xhr, status, error) {
+                                        console.error(error);
+                                    }
+                                });
+                            }
+
+                            function compareProducts(productId, productId2) {
+                                // Chuyển hướng người dùng đến trang so sánh sản phẩm với sản phẩm hiện tại và sản phẩm được chọn
+                                window.location.href = "/Compare/Index?productId1=" + productId + "&productId2=" + productId2;
+                            }
+
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

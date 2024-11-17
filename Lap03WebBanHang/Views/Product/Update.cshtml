@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Lap03WebBanHang.Models.Product
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+	ViewData["Title"] = "Edit Product";
+}
+ 
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="card-title text-center">Cập nhật sản phẩm</h2>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Update" method="post" enctype="multipart/form-data">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="mb-3">
+                            <label for="Name" class="form-label">Tên sản phẩm</label>
+                            <input asp-for="Name" class="form-control" id="Name" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Price" class="form-label">Giá sản phẩm</label>
+                            <input asp-for="Price" class="form-control" id="Price" />
+                            <span asp-validation-for="Price" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="Description" class="form-label">Mô tả sản phẩm</label>
+                            <textarea asp-for="Description" class="form-control" id="Description"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="CategoryId" class="form-label">Danh mục sản phẩm</label>
+                            <select asp-for="CategoryId" asp-items="@ViewBag.Categories" class="form-control" id="CategoryId">
+                                <option value="">Chọn danh mục</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="ImageUrl" class="form-label">Hình ảnh sản phẩm</label>
+                            <input type="file" asp-for="ImageUrl" class="form-control" id="ImageUrl" />
+                            <img src="@Model.ImageUrl" alt="Hình ảnh sản phẩm" style="max-width: 200px;" class="mt-2" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

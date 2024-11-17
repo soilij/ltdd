@@ -1,0 +1,50 @@
+﻿@model PrintfViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>In Hóa Đơn</title>
+</head>
+<body>
+    <div class="invoice-container">
+        <h2>Thông tin hóa đơn</h2>
+
+        <div class="bill-info">
+            <h3>Mã Hóa Đơn: @Model.OrderId</h3>
+            <h3>ID Người Dùng: @Model.UserId</h3>
+            <h3>Ngày Đặt Hàng: @Model.OrderDate</h3>
+            <h3>Địa Chỉ Giao Hàng: @Model.ShippingAddress</h3>
+            <h3>Ghi Chú: @Model.Notes</h3>
+        </div>
+
+        <h2>Chi tiết hóa đơn</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Số Lượng</th>
+                    <th>Giá</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var orderDetail in Model.OrderDetails)
+                {
+                    <tr>
+                        <td>@orderDetail.Product.Name</td>
+                        <td>@orderDetail.Quantity</td>
+                        <td>@orderDetail.Price</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="total-price">
+            <h3>Tổng Giá: @Model.TotalPrice</h3>
+        </div>
+
+        <button onclick="window.print()">In hóa đơn</button>
+    </div>
+</body>
+</html>

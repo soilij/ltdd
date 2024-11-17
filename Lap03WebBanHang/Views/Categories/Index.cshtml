@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Lap03WebBanHang.Models.Category>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h1 id="changingTitle" class="text-center" style="font-size: 46px; line-height: 54px; color: #222;">Loại sản phẩm</h1>
+    <script>
+        // Đợi cho trang được tải xong
+        document.addEventListener("DOMContentLoaded", function () {
+            // Lấy phần tử tiêu đề cần thay đổi màu
+            var changingTitle = document.getElementById("changingTitle");
+
+            // Thêm lớp 'changing' để kích hoạt animation
+            changingTitle.classList.add("changing");
+        });
+
+    </script>
+    <p class="text-end">
+        <a asp-action="Add" class="btn btn-primary">Thêm mới</a>
+    </p>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Tên</th>
+                    <th>Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>
+                            <div class="btn-group" role="group">
+                               @*  <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Chỉnh sửa</a> *@
+                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Xóa</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+

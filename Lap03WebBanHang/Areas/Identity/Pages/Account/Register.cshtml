@@ -1,0 +1,88 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Đăng kí";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="card shadow">
+                <h2 class="card-header">Tạo tài khoản mới</h2>
+                <div class="card-body">
+                    <hr />
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                    <div class="form-group">
+                        <label for="Input_FullName">Họ và tên</label>
+                        <input asp-for="Input.FullName" id="Input_FullName" class="form-control" autocomplete="fullname" aria-required="true" />
+                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="Input_Email">Email</label>
+                        <input asp-for="Input.Email" id="Input_Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="Input_Password">Mật khẩu</label>
+                        <input asp-for="Input.Password" id="Input_Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="Input_ConfirmPassword">Xác nhận mật khẩu</label>
+                        <input asp-for="Input.ConfirmPassword" id="Input_ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="Input_Role">Vai trò</label>
+                        <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-control">
+                            <option disabled selected>-Chọn vai trò-</option>
+                        </select>
+                    </div>
+                    <div id="adminKeyForm" style="display:none;">
+                        <div class="form-group">
+                            <label for="adminKey">Mã quản trị</label>
+                            <input type="text" class="form-control" id="adminKey" placeholder="Mã quản trị">
+                        </div>
+                    </div>
+                    <button id="registerSubmit" type="submit" class="btn btn-primary btn-block">Đăng ký</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#Input_Role').change(function () {
+                if ($(this).val() === 'Admin') {
+                    $('#adminKeyForm').show();
+                } else {
+                    $('#adminKeyForm').hide();
+                }
+            });
+
+            $('#registerSubmit').click(function () {
+                var role = $('#Input_Role').val();
+                if (role === 'Admin') {
+                    var adminKey = $('#adminKey').val();
+                    // Kiểm tra key
+                    if (adminKey === '123456') {
+                        // Thực hiện tạo tài khoản
+                        $('#registerForm').submit();
+                    } else {
+                        // Hiển thị thông báo lỗi
+                        alert('Invalid admin key. Please try again.');
+                    }
+                } else {
+                    // Nếu không phải role Admin, thực hiện tạo tài khoản
+                    $('#registerForm').submit();
+                }
+            });
+        });
+    </script>
+}
+
+    <partial name="_ValidationScriptsPartial" />

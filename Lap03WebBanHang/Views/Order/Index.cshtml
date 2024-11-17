@@ -1,0 +1,76 @@
+﻿@model List<Lap03WebBanHang.Models.Order>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Hóa đơn</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Animation for changing title color */
+        .changingColor {
+            0% { color: black; }
+            50% { color: red; }
+            100% { color: black; }
+        }
+
+        /* Class for adding animation to title */
+        .changing-title {
+            animation: changingColor 3s infinite;
+        }
+
+        /* Adding shadow to table */
+        .shadow {
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 id="changingTitle" class="text-center changing-title">Hóa đơn</h2>
+        <table class="table table-bordered table-hover shadow">
+            <thead class="thead-light">
+                <tr>
+                    <th>Mã hóa đơn</th>
+                    <th>ID người dùng</th>
+                    <th>Ngày và giờ đặt hàng</th>
+                    <th>Tổng giá</th>
+                    <th>Địa chỉ giao hàng</th>
+                    <th>Ghi chú</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.UserId</td>
+                        <td>@order.OrderDate</td>
+                        <td>@order.TotalPrice</td>
+                        <td>@order.ShippingAddress</td>
+                        <td>@order.Notes</td>
+                        <td>
+                            <form action="/Printf" method="get">
+                                <input type="hidden" name="orderId" value="@order.Id" />
+                                <input type="hidden" name="userId" value="@order.UserId" />
+                                <input type="hidden" name="orderDate" value="@order.OrderDate" />
+                                <input type="hidden" name="totalPrice" value="@order.TotalPrice" />
+                                <input type="hidden" name="shippingAddress" value="@order.ShippingAddress" />
+                                <input type="hidden" name="notes" value="@order.Notes" />
+                                <button type="submit" class="btn btn-primary btn-sm">In hóa đơn</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Cần Popper.js để Bootstrap Dropdown, Tooltips, và Popovers hoạt động -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

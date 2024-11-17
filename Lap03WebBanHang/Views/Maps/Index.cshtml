@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+        body {
+            margin: 0;
+        }
+
+        #map {
+            height: 800px;
+            width: 100%;
+        }
+    </style>
+    <title>Map Page</title>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css" rel="stylesheet" />
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+    <link rel="stylesheet"
+          href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css"
+          type="text/css" />
+</head>
+<body>
+    <div id="map"></div>
+    <div class="mb-3">
+        <label for="ShippingAddress" class="form-label">Chọn vị trí trên bản đồ</label>
+        <input type="text" id="ShippingAddress" name="ShippingAddress" class="form-control" placeholder="Nhập địa chỉ giao hàng" readonly>
+    </div>
+
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1IjoiamF1aGFybXVoYW1tZWQiLCJhIjoiY2xjMWl6c3VtMGxkYzNwbGs2dWVidDVsZCJ9.1Lyl-BoNItxbKW9_j3c-QA';
+
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [105.8523, 21.0285], // Tọa độ mặc định
+            zoom: 12
+        });
+
+        const geocoder = new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+        });
+
+        map.addControl(geocoder);
+
+        map.on('load', function () {
+            map.addSource('single-point', {
+                type: 'geojson',
+                data: {
+                    type: 'FeatureCollection',
+                    features: []
+                }
+            });
+
+            map.addLayer({
+                id: 'point',
+                source: 'single-point',
+                type: 'circle',
+                paint: {
+                    'circle-radius': 10,
+                    'circle-color': '#007cbf'
+                }
+            });
+
+            map.on('click', function (e) {
+                const coordinates = [e.lngLat.lng, e.lngLat.lat];
+                document.getElementById('ShippingAddress').value = coordinates.join(', ');
+                map.getSource('single-point').setData({
+                    type: 'FeatureCollection',
+                    features: [{
+                        type: 'Feature',
+                        geometry: {
+                            type: 'Point',
+                            coordinates: coordinates
+                        }
+                    }]
+                });
+            });
+        });
+    </script>
+</body>
+</html>
