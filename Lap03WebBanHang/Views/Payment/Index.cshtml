@@ -1,0 +1,15 @@
+﻿@{
+    ViewBag.Title = "Thanh Toán Qua MoMo";
+}
+
+<h2>Thanh Toán Qua MoMo</h2>
+
+<form method="post" action="/Payment/ProcessPayment">
+    <button type="submit">Thanh Toán</button>
+</form>
+
+@if (ViewBag.Response != null)
+{
+    <h3>Kết quả từ MoMo:</h3>
+    <pre>@ViewBag.Response</pre>
+}

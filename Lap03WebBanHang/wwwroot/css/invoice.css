@@ -1,0 +1,9 @@
+@media print {
+    .no-print, .layout {
+        display: none !important;
+    }
+    img {
+        max-width: 100%;
+        height: auto;
+    }
+}

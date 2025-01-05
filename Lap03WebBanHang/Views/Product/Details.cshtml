@@ -1,0 +1,105 @@
+﻿@using System.Text.RegularExpressions
+@model Lap03WebBanHang.Models.Product
+@{
+    ViewData["Title"] = "Product Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    List<Lap03WebBanHang.Models.Product> relatedProducts = ViewData["RelatedProducts"] as List<Lap03WebBanHang.Models.Product>;
+
+}
+
+<div class="small-container single-product">
+    <div class="row">
+        <div class="col-2">
+            <img src="@(Model.ImageUrl != null ? Model.ImageUrl : "/images/default-image.jpg")" width="100%" id="productImg" alt="@Model.Name">
+            <div class="small-img-row">
+                @* Ví dụ về gallery ảnh nhỏ (nếu có nhiều ảnh)
+                @if (Model.ProductImages != null && Model.ProductImages.Any()) {
+                foreach (var image in Model.ProductImages) {
+                <div class="small-img-col">
+                <img src="@image.Url" width="100%" class="small-img" alt="@Model.Name">
+                </div>
+                }
+                }
+                *@
+            </div>
+        </div>
+
+        <div class="col-2">
+            <p>Trang chủ / @Model.Category?.Name</p>
+            <h1>@Model.Name</h1>
+            <h4>@String.Format("{0:n0} VND", Model.Price)</h4>
+            @* Bỏ dòng M.R.P nếu không cần thiết
+            <p>M.R.P. ₹̶4̶4̶9̶ </p>
+            *@
+            @* Đánh giá sao (nếu có)
+            <div class="rating">
+            @for (int i = 1; i <= 5; i++) {
+            <span class="fa fa-star @(i <= Model.Rating ? "checked" : "")"></span>
+            }
+            <p>@Model.Rating out of 5 stars</p>
+            </div>
+            *@
+            <br>
+            <form asp-controller="ShoppingCart" asp-action="AddToCart" method="post">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <input type="number" name="quantity" value="1" min="1" />
+                <button type="submit" class="btn">Thêm vào giỏ hàng</button>
+            </form>
+
+           
+
+            <h3>Chi tiết sản phẩm</h3>
+            <br>
+            <p>
+                <b>Mô tả:</b>
+                @foreach (var sentence in Regex.Split(Model.Description, @"(?<=[.?!])\s+"))
+                {
+                    @sentence
+
+                    <br />
+                }
+            </p>
+            <hr><br>
+        </div>
+    </div>
+</div>
+
+@if (relatedProducts != null && relatedProducts.Any())
+{
+    <div class="small-container">
+        <div class="row row-2">
+            <h2>Sản phẩm tương tự</h2>
+        </div>
+        <div class="row">
+            @foreach (var relatedProduct in relatedProducts)
+            {
+                <div class="col-4">
+                    <a asp-controller="Product" asp-action="Details" asp-route-id="@relatedProduct.Id">
+                        <img src="@(relatedProduct.ImageUrl != null ? relatedProduct.ImageUrl : "/images/default-image.jpg")" alt="@relatedProduct.Name">
+                    </a>
+                    <h4>@relatedProduct.Name</h4>
+                    <p>@String.Format("{0:n0} VND", relatedProduct.Price)</p>
+                </div>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <div class="small-container">
+        <p>Hiện chưa có sản phẩm tương tự.</p>
+    </div>
+}
+
+<script>
+    var ProductImg = document.getElementById("productImg");
+    var SmallImg = document.getElementsByClassName("small-img");
+
+    if (SmallImg != null) {
+        for (let i = 0; i < SmallImg.length; i++) {
+            SmallImg[i].onclick = function () {
+                ProductImg.src = SmallImg[i].src;
+            }
+        }
+    }
+</script>

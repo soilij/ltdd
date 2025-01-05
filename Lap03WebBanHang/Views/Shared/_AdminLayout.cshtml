@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Panel</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/admin.css" />
+    <link rel="stylesheet" href="~/css/invoice.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="//cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <!-- Sidebar -->
+        <div class="bg-gradient-primary" id="sidebar-wrapper">
+            <div class="sidebar-heading text-white text-center py-4">
+                <i class="fas fa-tools"></i> <!-- Replace text with an icon -->
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="@Url.Action("Index", "Home", new { area = "" })" class="list-group-item list-group-item-action bg-gradient-primary text-white">
+                    <i class="fas fa-home"></i> Trang chủ cửa hàng
+                </a>
+                <a href="@Url.Action("Index", "Admin", new { area = "Admin" })" class="list-group-item list-group-item-action bg-gradient-primary text-white">
+                    <i class="fas fa-tachometer-alt"></i> Bảng điều khiển
+                </a>
+                <a href="@Url.Action("Products", "Admin", new { area = "Admin" })" class="list-group-item list-group-item-action bg-gradient-primary text-white">
+                    <i class="fas fa-cogs"></i> Sản phẩm
+                </a>
+                <a href="@Url.Action("Categories", "Admin", new { area = "Admin" })" class="list-group-item list-group-item-action bg-gradient-primary text-white">
+                    <i class="fas fa-box"></i> Loại sản phẩm
+                </a>
+                <a href="@Url.Action("Orders", "Admin", new { area = "Admin" })" class="list-group-item list-group-item-action bg-gradient-primary text-white">
+                    <i class="fas fa-shopping-cart"></i> Đơn hàng
+                </a>
+               
+            </div>
+        </div>
+
+        <!-- /Sidebar -->
+        <!-- Content Wrapper -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <main role="main" class="pb-3">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+        <!-- /Content Wrapper -->
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

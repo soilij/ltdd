@@ -1,0 +1,151 @@
+﻿@model Lap03WebBanHang.ViewModel.ProductViewModel
+
+@{
+    ViewData["Title"] = "Products";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<form asp-action="SearchProducts" asp-controller="Product" method="get" class="mb-3">
+    <div class="input-group">
+        <input type="text" name="query" class="form-control" placeholder="Tìm sản phẩm" value="@ViewData["Query"]" />
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </div>
+</form>
+<h2 class="title">Sản phẩm</h2>
+<div class="content-container">
+<div class="row">
+    @foreach (var product in Model.Products)
+    {
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100">
+                <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="product-details-@product.Id" target="_blank">@product.Name</a></h5>
+                    <p class="card-text">@String.Format("{0:n0} VND", product.Price)</p> <!-- Chuyển đổi định dạng tiền tệ -->
+                        <a href="/Product/Details/@product.Id" class="btn btn-primary">Chi tiết mặt hàng</a>
+                </div>
+            </div>
+        </div>
+    }
+        <!-- Phân trang -->
+        <div class="pagination">
+            <!-- Previous Page Link -->
+            @if (Model.CurrentPage > 1)
+            {
+                <a href="@Url.Action("ShowProduct", new { page = Model.CurrentPage - 1 })" class="page-link">&laquo; </a>
+            }
+
+            <!-- Page Numbers -->
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <a href="@Url.Action("ShowProduct", new { page = i })" class="page-link @(i == Model.CurrentPage ? "active" : "")">@i</a>
+            }
+
+            <!-- Next Page Link -->
+            @if (Model.CurrentPage < Model.TotalPages)
+            {
+                <a href="@Url.Action("ShowProduct", new { page = Model.CurrentPage + 1 })" class="page-link"> &raquo;</a>
+            }
+        </div>
+</div>
+</div>
+
+<style>
+    .title {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-10px); /* Chuyển động lên khi di chuột */
+            box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        }
+
+    .card-img-top {
+        width: 300px;
+        height: 300px;
+    }
+
+    .card-body {
+        text-align: center;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-text {
+        color: grey;
+    }
+
+    .btn {
+        background-color: darksalmon;
+        border: none;
+    }
+
+        .btn:hover {
+            background-color: salmon;
+        }
+
+    .content-container {
+        margin-bottom: 75px; /* Thêm khoảng cách với footer */
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+        font-size: 16px;
+        
+        bottom: 0; /* Gắn thanh phân trang ở dưới cùng của trang */
+        left: 0;
+        width: 100%; /* Chiếm hết chiều rộng của màn hình */
+        background-color: white; /* Đặt nền trắng để dễ nhìn */
+        z-index: 1000; /* Đảm bảo thanh phân trang hiển thị trên các phần tử khác */
+        padding: 10px 0; /* Khoảng cách trên và dưới */
+    }
+
+        .pagination a {
+            text-decoration: none;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 5px;
+            background-color: #f1f1f1;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+
+            .pagination a:hover {
+                background-color: #ddd;
+            }
+
+        .pagination .active {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .pagination .page-link {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 0 5px;
+            color: #007bff;
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+            .pagination .page-link:hover {
+                background-color: #007bff;
+                color: white;
+            }
+</style>

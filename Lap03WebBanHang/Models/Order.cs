@@ -11,11 +11,14 @@ namespace Lap03WebBanHang.Models
         public DateTime OrderDate { get; set; }
         public decimal TotalPrice { get; set; }
         public string ShippingAddress { get; set; }
+        public string PaymentMethod { get; set; }
         public string Notes { get; set; }
+        public string DeliveryStatus { get; set; }
+        public string Phone {  get; set; }  
         [ForeignKey("UserId")]
         [ValidateNever]
         public ApplicationUser ApplicationUser { get; set; }
-        public List<OrderDetail> OrderDetails { get; set; }
+        public List<OrderDetail> OrderDetails { get; set; } // Thêm thuộc tính PaymentMethod
 
     }
 }

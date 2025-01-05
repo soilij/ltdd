@@ -1,58 +1,48 @@
 ﻿@model Lap03WebBanHang.Models.Product
 @using Microsoft.AspNetCore.Mvc.Rendering
 @{
-    ViewData["Title"] = "Add Product";
+    ViewData["Title"] = "Thêm Sản Phẩm";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
 }
 
-<div class="container">
+<div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="card-title text-center">Thêm sản phẩm mới</h2>
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-primary text-white text-center">
+                    <h2 class="card-title">Thêm sản phẩm mới</h2>
                 </div>
                 <div class="card-body">
                     <form asp-action="Add" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
-                        <div class="mb-3">
-                            <label for="productName" class="form-label">Tên sản phẩm</label>
-                            <input type="text" id="productName" asp-for="Name" class="form-control" required />
-                            <div class="invalid-feedback">
-                                Vui lòng nhập tên sản phẩm.
-                            </div>
+                        <div class="form-group">
+                            <label asp-for="Name" class="control-label">Tên sản phẩm</label>
+                            <input asp-for="Name" class="form-control" required />
+                            <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
-                        <div class="mb-3">
-                            <label for="productPrice" class="form-label">Giá (VNĐ)</label>
-                            <input type="text" id="productPrice" asp-for="Price" class="form-control" pattern="[0-9]*" inputmode="numeric" required />
-                            <div class="invalid-feedback">
-                                Vui lòng nhập giá sản phẩm.
-                            </div>
+                        <div class="form-group">
+                            <label asp-for="Price" class="control-label">Giá (VNĐ)</label>
+                            <input asp-for="Price" class="form-control" required />
+                            <span asp-validation-for="Price" class="text-danger"></span>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="productDescription" class="form-label">Mô tả</label>
-                            <textarea id="productDescription" asp-for="Description" class="form-control" rows="4" required></textarea>
-                            <div class="invalid-feedback">
-                                Vui lòng nhập mô tả sản phẩm.
-                            </div>
+                        <div class="form-group">
+                            <label asp-for="Description" class="control-label">Mô tả</label>
+                            <textarea asp-for="Description" class="form-control" rows="4" required></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
                         </div>
-                        <div class="mb-3">
-                            <label for="productCategory" class="form-label">Danh mục</label>
-                            <select id="productCategory" asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control" required>
+                        <div class="form-group">
+                            <label asp-for="CategoryId" class="control-label">Danh mục</label>
+                            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control" required>
                                 <option value="">Chọn danh mục</option>
                             </select>
-                            <div class="invalid-feedback">
-                                Vui lòng chọn danh mục sản phẩm.
-                            </div>
+                            <span asp-validation-for="CategoryId" class="text-danger"></span>
                         </div>
-                        <div class="mb-3">
-                            <label for="productImage" class="form-label">Ảnh sản phẩm</label>
-                            <input type="file" id="productImage" asp-for="ImageUrl" class="form-control" required />
-                            <div class="invalid-feedback">
-                                Vui lòng chọn ảnh sản phẩm.
-                            </div>
+                        <div class="form-group">
+                            <label asp-for="ImageUrl" class="control-label">Ảnh sản phẩm</label>
+                            <input type="file" asp-for="ImageUrl" class="form-control" required />
+                            <span asp-validation-for="ImageUrl" class="text-danger"></span>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary">Thêm</button>
+                            <button type="submit" class="btn btn-primary btn-lg">Thêm sản phẩm</button>
                         </div>
                     </form>
                 </div>
@@ -60,3 +50,49 @@
         </div>
     </div>
 </div>
+
+<style>
+    body {
+        background-color: #f4f7fa;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .card {
+        border-radius: 10px;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+    .btn {
+        border-radius: 25px;
+        padding: 10px 20px;
+        font-size: 16px;
+    }
+
+    h1, h2 {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .text-center {
+        margin-bottom: 20px;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const buttons = document.querySelectorAll('.btn');
+        buttons.forEach(button => {
+            button.addEventListener('mouseover', function () {
+                this.style.opacity = '0.8';
+            });
+            button.addEventListener('mouseout', function () {
+                this.style.opacity = '1';
+            });
+        });
+    });
+</script>

@@ -1,116 +1,103 @@
-﻿<div class="container mt-5">
+﻿@model Lap03WebBanHang.Models.ShoppingCart
 
-<style>
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
+@{
+    ViewData["Title"] = "Shopping Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-        h2 {
-            font-size: 46px;
-            line-height: 54px;
-            color: #222;
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-            .table th,
-            .table td {
-                padding: 12px;
-                text-align: left;
-            }
-
-            .table th {
-                background-color: #f2f2f2;
-                font-weight: bold;
-            }
-
-        .table-striped tbody tr:nth-of-type(odd) {
-            background-color: #f9f9f9;
-        }
-
-        .quantity-input {
-            width: 60px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            font-size: 16px;
-        }
-
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            color: #fff;
-        }
-
-            .btn-primary:hover {
-                background-color: #0056b3;
-                border-color: #0056b3;
-            }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
-            color: #fff;
-        }
-
-            .btn-secondary:hover {
-                background-color: #5a6268;
-                border-color: #545b62;
-            }
-
-</style>
-    <h2 id="changingTitle" class="text-center" style="font-size: 46px; line-height: 54px; color: #222;">Đơn hàng của bạn</h2>
-    <script>
-        // Đợi cho trang được tải xong
-        document.addEventListener("DOMContentLoaded", function () {
-            // Lấy phần tử tiêu đề cần thay đổi màu
-            var changingTitle = document.getElementById("changingTitle");
-
-            // Thêm lớp 'changing' để kích hoạt animation
-            changingTitle.classList.add("changing");
-        });
-    </script>
-    <div class="table-responsive">
-        <table class="table table-striped">
+<div class="small-container">
+    <h2>Giỏ hàng của bạn</h2>
+    @if (Model.Items.Count == 0)
+    {
+        <p>@ViewBag.Message</p>
+    }
+    else
+    {
+        <table class="cart-table">
             <thead>
                 <tr>
+                    <th>Sản phẩm</th>
                     <th>Tên sản phẩm</th>
+                    <th>ĐƠn giá</th>
                     <th>Số lượng</th>
-                    <th>Giá</th>
-                    <th>Tổng giá</th>
-                    <th>Actions</th>
+                    <th>Tổng tiền</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach (var item in Model.Items)
                 {
                     <tr>
-                        <td>@item.Name</td>
                         <td>
-                            <!-- Nút chọn số lượng -->
-                            <input type="number" class="quantity-input" value="@item.Quantity" min="1" max="100">
+                            <!-- Hiển thị ảnh sản phẩm từ Product -->
+                            <img src="@item.Product.ImageUrl" alt="@item.Name" class="cart-item-img">
                         </td>
-                        <td>@item.Price</td>
-                        <td>@(item.Price * item.Quantity)</td>
+                        <td>@item.Name</td>
+                        <td>@String.Format("{0:n0} VND", item.Price)</td>
                         <td>
-                            <form asp-action="RemoveFromCart" asp-route-productId=" @item.ProductId">
-                                <button type="submit" class="btn btn-danger">Xóa</button>
+                            <!-- Form to update quantity -->
+                            <form action="@Url.Action("UpdateQuantity", "ShoppingCart")" method="post">
+                                <input type="hidden" name="productId" value="@item.ProductId" />
+                                <input type="number" name="quantity" value="@item.Quantity" min="1" />
+                                <button type="submit" class="update-btn">Cập nhật</button>
                             </form>
+                        </td>
+                        <td>@String.Format("{0:n0} VND", item.Price * item.Quantity)</td>
+                        <td>
+                            <a href="@Url.Action("RemoveFromCart", "ShoppingCart", new { productId = item.ProductId })" class="remove-btn">Xóa sản phẩm</a>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
-    </div>
 
-    <div class="text-center">
-        <a asp-controller="ShoppingCart" asp-action="Checkout" class="btn btn-primary">Đặt hàng</a>
-        <a asp-controller="Product" asp-action="Index" class="btn btn-secondary">Tiếp tục mua hàng</a>
-    </div>
+        <div class="cart-total">
+            <h3>Total: @String.Format("{0:n0} VND", Model.CalculateTotal())</h3>
+            <a href="@Url.Action("Checkout", "ShoppingCart")" class="btn">Tiến hành thanh toán</a>
+            <a href="@Url.Action("ClearCart", "ShoppingCart")" class="btn clear-cart-btn">Xóa giỏ hàng</a>
+        </div>
+    }
 </div>
+
+<style>
+    .cart-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .cart-table th, .cart-table td {
+            padding: 10px;
+            text-align: center;
+        }
+
+    .cart-item-img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .update-btn, .remove-btn, .clear-cart-btn {
+        padding: 5px 10px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .remove-btn {
+        color: red;
+    }
+
+    .cart-total {
+        margin-top: 20px;
+    }
+
+    .btn {
+        background-color: #007BFF;
+        color: white;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+    .clear-cart-btn {
+        background-color: #dc3545;
+    }
+</style>

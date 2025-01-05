@@ -1,31 +1,60 @@
 ﻿using Lap03WebBanHang.DataAccess;
 using Lap03WebBanHang.Models;
+using Lap03WebBanHang.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lap03WebBanHang.Repositories
 {
     public interface IOrderRepository
     {
-        List<OrderDetail> GetOrderDetails(int orderId);
+        Task<List<Order>> GetAllAsync(); // Lấy tất cả đơn hàng
+        Task<OrderViewModel> GetOrderByIdAsync(int orderId); // Lấy thông tin hóa đơn theo ID
+        Task<List<OrderDetail>> GetOrderDetailsAsync(int orderId);
     }
 
     public class OrderRepository : IOrderRepository
     {
-        private readonly ApplicationDbContext dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
         public OrderRepository(ApplicationDbContext dbContext)
         {
-            this.dbContext = dbContext;
+            _dbContext = dbContext;
         }
 
-        public List<OrderDetail> GetOrderDetails(int orderId)
+        public async Task<List<Order>> GetAllAsync()
         {
-            // Triển khai logic để lấy chi tiết đơn hàng từ cơ sở dữ liệu hoặc nguồn dữ liệu khác
-            return dbContext.OrderDetails
-                            .Include(od => od.Product) // Include Product vào truy vấn
-                            .Where(od => od.OrderId == orderId)
-                            .ToList();
+            return await _dbContext.Orders.ToListAsync();
         }
 
+        public async Task<OrderViewModel> GetOrderByIdAsync(int orderId)
+        {
+            var order = await _dbContext.Orders
+                .Include(o => o.OrderDetails)
+                .FirstOrDefaultAsync(o => o.Id == orderId);
+
+            if (order == null) return null;
+
+            var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == order.UserId);
+
+            return new OrderViewModel
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                UserName = user?.UserName, // Lấy tên người dùng
+                OrderDate = order.OrderDate,
+                TotalPrice = order.TotalPrice,
+                ShippingAddress = order.ShippingAddress,
+                Notes = order.Notes,
+                OrderDetails = order.OrderDetails.ToList()
+            };
+        }
+
+        public async Task<List<OrderDetail>> GetOrderDetailsAsync(int orderId)
+        {
+            return await _dbContext.OrderDetails
+                .Include(od => od.Product) // Bao gồm thông tin sản phẩm
+                .Where(od => od.OrderId == orderId)
+                .ToListAsync();
+        }
     }
 }

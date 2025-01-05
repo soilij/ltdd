@@ -1,0 +1,223 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid pt-4">
+    <h1 class="mb-4">Quản lý cửa hàng</h1>
+
+    <div class="row">
+        <!-- Card Tổng số sản phẩm -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Tổng số sản phẩm
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalProducts</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-cogs fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Products", "Admin", new { area = "Admin" })" class="text-primary">
+                        Xem chi tiết <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Tổng số danh mục -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Tổng số danh mục
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">@ViewBag.TotalCategories</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-box fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="@Url.Action("Categories", "Admin", new { area = "Admin" })" class="text-success">
+                        Xem chi tiết <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Tổng số sản phẩm tồn kho -->
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-left-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Tổng số sản phẩm tồn kho
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                @ViewBag.TotalInventoryProducts
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-cogs fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <!-- Cập nhật liên kết để trỏ đến hành động Warehouse -->
+                    <a href="@Url.Action("Warehouse", "Admin", new { area = "Admin" })" class="text-primary">
+                        Xem chi tiết <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    <!-- Card Quản lý hóa đơn -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                            Quản lý hóa đơn
+                        </div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">
+                            Xem tất cả hóa đơn
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-file-invoice fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="@Url.Action("Orders", "Admin", new { area = "Admin" })" class="text-info">
+                    Xem chi tiết <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+        <!-- Thống kê doanh thu -->
+        <div class="col-md-12 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Thống kê doanh thu</h6>
+                </div>
+                <div class="card-body">
+                    <!-- Form chọn khoảng thời gian -->
+                    <div class="form-group row">
+                        <div class="col-md-4">
+                            <label for="startDate">Ngày bắt đầu:</label>
+                            <input type="date" id="startDate" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="endDate">Ngày kết thúc:</label>
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
+                        <div class="col-md-4 align-self-end">
+                            <button class="btn btn-primary" id="filterButton">Xem thống kê</button>
+                        </div>
+                    </div>
+
+                    <!-- Khu vực hiển thị biểu đồ -->
+                    <div id="revenueChart" style="width: 100%; height: 400px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+    // Load Google Charts
+    google.charts.load('current', { packages: ['corechart'] });
+
+    function drawRevenueChart(startDate, endDate) {
+        if (!startDate || !endDate) {
+            alert("Vui lòng chọn cả ngày bắt đầu và ngày kết thúc.");
+            return;
+        }
+
+        // Gửi yêu cầu lấy dữ liệu doanh thu
+        fetch(`/Admin/Admin/GetRevenueData?startDate=${startDate}&endDate=${endDate}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("API không trả về dữ liệu hợp lệ.");
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                    return;
+                }
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    alert("Không có dữ liệu doanh thu trong khoảng thời gian này.");
+                    return;
+                }
+
+                // Tạo DataTable cho biểu đồ
+                const chartData = new google.visualization.DataTable();
+                chartData.addColumn('string', 'Ngày');
+                chartData.addColumn('number', 'Doanh thu (VNĐ)');
+
+                data.forEach(d => {
+                    chartData.addRow([
+                        new Date(d.date).toLocaleDateString('vi-VN'),
+                        d.revenue || 0 // Đảm bảo doanh thu luôn là số
+                    ]);
+                    });
+
+                // Tùy chọn biểu đồ
+                const options = {
+                    title: 'Doanh thu theo khoảng thời gian',
+                    hAxis: { title: 'Ngày' },
+                    vAxis: { title: 'Doanh thu (VNĐ)', format: 'short' },
+                    legend: { position: 'bottom' },
+                    height: 400,
+                    width: '100%',
+                    colors: ['#1b9e77'],
+                };
+
+                // Vẽ biểu đồ
+                const chart = new google.visualization.ColumnChart(document.getElementById('revenueChart'));
+                chart.draw(chartData, options);
+            })
+            .catch(error => {
+                console.error("Có lỗi khi tải dữ liệu:", error);
+                alert("Không thể tải dữ liệu doanh thu.");
+            });
+    }
+
+    // Khi nhấn nút "Xem thống kê"
+    document.getElementById('filterButton').addEventListener('click', function () {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        drawRevenueChart(startDate, endDate);
+    });
+
+    // Thiết lập mặc định cho ngày bắt đầu và ngày kết thúc
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('startDate').value = today;
+    document.getElementById('endDate').value = today;
+
+    // Gọi hàm vẽ biểu đồ mặc định
+    google.charts.setOnLoadCallback(() => drawRevenueChart(today, today));
+
+</script>
+
+
+

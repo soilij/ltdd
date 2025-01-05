@@ -1,86 +1,239 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>@ViewData["Title"] - Tiệm điện Trần Duy</title>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <title>@ViewData["Title"] - My Shop</title>
     <link rel="stylesheet" href="~/css/style.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         .main-content {
             padding-top: 100px;
         }
-
-        .header {
+        /* Icon hiển thị chat */
+        .chat-icon {
             position: fixed;
-            width: 100%;
-            top: 0;
+            bottom: 20px;
+            right: 20px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
             z-index: 1000;
-            background-color: darksalmon;
         }
+
+            .chat-icon i {
+                font-size: 24px;
+            }
+
+        /* Chatbox tổng thể */
+        #chatbox-overlay {
+            position: fixed;
+            bottom: 0;
+            right: 20px;
+            width: 400px !important;
+            max-height: 600px !important; /* Tăng chiều cao tối đa */
+            background-color: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px 10px 0 0;
+            display: none;
+            flex-direction: column;
+            z-index: 1001;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+        }
+
+            /* Hiển thị khung chat khi bật */
+            #chatbox-overlay.chatbox-visible {
+                display: flex;
+            }
+
+        /* Header khung chat */
+        .chatbox-header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px; /* Tăng kích thước chữ */
+            font-weight: bold;
+            border-bottom: 2px solid #0056b3;
+        }
+
+            .chatbox-header i {
+                cursor: pointer;
+                font-size: 20px;
+            }
+
+        /* Body khung chat */
+        .chatbox-body {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            background-color: #f1f1f1;
+        }
+
+        #chatbox-messages {
+            flex: 1;
+            overflow-y: auto; /* Hiển thị thanh cuộn khi nội dung vượt quá chiều cao */
+            background-color: #ffffff;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            height: 400px; /* Chiều cao cố định */
+            max-height: 400px; /* Đảm bảo chiều cao không vượt quá */
+            scroll-behavior: smooth; /* Cuộn mượt mà */
+        }
+
+        /* Tin nhắn người dùng */
+        .message.user {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+            .message.user p {
+                background-color: #007bff;
+                color: white;
+                padding: 10px 15px;
+                border-radius: 15px;
+                max-width: 70%;
+                word-wrap: break-word;
+                font-size: 14px;
+            }
+
+        /* Tin nhắn GPT */
+        .message.assistant {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 10px;
+        }
+
+            .message.assistant p {
+                background-color: #e9ecef;
+                color: #333;
+                padding: 10px 15px;
+                border-radius: 15px;
+                max-width: 70%;
+                word-wrap: break-word;
+                font-size: 14px;
+            }
+
+        /* Form gửi tin nhắn */
+        #chatbox-form {
+            display: flex;
+            padding: 10px;
+            background-color: #ffffff;
+            border-top: 1px solid #ddd;
+            align-items: center;
+        }
+
+            #chatbox-form input {
+                flex: 1;
+                padding: 10px 15px;
+                border: 1px solid #ddd;
+                border-radius: 20px;
+                font-size: 14px;
+                margin-right: 10px;
+                box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            #chatbox-form button {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 16px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                transition: background-color 0.2s ease;
+            }
+
+                #chatbox-form button:hover {
+                    background-color: #0056b3;
+                }
+
+        .file-icon {
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-left: 10px;
+            font-size: 20px;
+        }
+
+        #file-input {
+            display: none; /* Ẩn input file */
+        }
+
     </style>
 </head>
+
 <body>
-    <!-- Header -->
+
     <div class="header">
         <div class="container">
             <div class="navbar">
                 <div class="logo">
-                    <a asp-controller="Home" asp-action="Index">
-                        <img src="~/images/logo.png" width="125px" alt="Tiệm điện Trần Duy" />
+                    <a href="~/">
+                        <i class="fas fa-store" style="font-size: 48px; color: #333;"></i>
                     </a>
                 </div>
+                <!-- Nút Menu -->
+                <img src="~/images/menu.jpg" class="menu-icon" onclick="toggleMenu()">
+                <!-- Menu Items -->
                 <nav>
-                    <ul id="MenuItems">
-                        <li><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
-                        <li class="dropdown">
-                            <a asp-controller="Product" asp-action="Index">Sản phẩm</a>
-                            <a href="javascript:void(0);" onclick="menutoggl()" class="dropdown-toggle">
-                                <i class="fas fa-caret-down"></i>
-                            </a>
-                            <ul id="inneritems" style="display:none;">
-                                @if (User.Identity.IsAuthenticated && User.IsInRole("Admin"))
-                                {
-                                    <li><a asp-controller="Product" asp-action="Add">Thêm sản phẩm</a></li>
-                                    <li><a asp-controller="Categories" asp-action="Index">Thêm thể loại</a></li>
-                                    <li><a asp-controller="Order" asp-action="Index">Danh sách hóa đơn</a></li>
-                                    <li><a asp-controller="Thongke" asp-action="Index">Thống kê doanh thu</a></li>
-                                }
-                                else
-                                {
-                                    <li><a asp-controller="OrderHistory" asp-action="Index">Danh sách hóa đơn</a></li>
-                                }
-                            </ul>
+                    <ul id="MenuItems" class="menu-hidden">
+                        <li><a href="~/">Trang chủ</a></li>
+                        <li><a asp-action="ShowProduct" asp-controller="Product">Sản phẩm</a></li>
+                        <li><a href="~/Home/About">Giới thiệu</a></li>
+                        <li><a href="~/Home/Contact">Liên hệ</a></li>
+                        <li>
+                            @if (User?.Identity?.IsAuthenticated == true)
+                            {
+                                <a asp-action="Manage" asp-controller="Account" class="d-flex align-items-center text-decoration-none">
+                                    <i class="fas fa-user me-2"></i> @User.Identity.Name
+                                </a>
+                                <a class="nav-link text-dark ms-3" href="@Url.Action("Index", "Admin", new { area = "Admin" })">
+                                    <i class="fas fa-cog"></i>
+                                </a>
+
+                            }
+                            else
+                            {
+                                <a href="~/Identity/Account/Login">Quản lý tài khoản</a>
+                            }
                         </li>
-                        <li><a asp-controller="Home" asp-action="About">Giới thiệu</a></li>
-                        <li><a asp-controller="Home" asp-action="Contact">Liên hệ</a></li>
                     </ul>
                 </nav>
-
-                <!-- Shopping Cart -->
-                <div class="d-flex align-items-center">
-                    <a asp-controller="ShoppingCart" asp-action="Index" class="btn btn-outline-dark">
-                        <i class="bi-cart-fill me-1"></i>
-                        Cart
-                        <span id="cartQuantity" class="badge bg-primary">0</span>
-                    </a>
-                    <partial name="_LoginPartial" />
-                </div>
-
-                <img src="~/images/menu.png" class="menu-icon" onclick="menutoggle()">
+                <a href="~/ShoppingCart/Index">
+                    <img src="https://seeyashop.netlify.app/images/cart.png" width="30px" height="30px">
+                </a>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
+
+    <!-- Main content -->
     <div class="container main-content">
         @RenderBody()
     </div>
@@ -90,75 +243,172 @@
         <div class="container-f">
             <div class="row-f">
                 <div class="footer-col">
-                    <h4>Danh mục</h4>
+                    <h4>Sản phẩm</h4>
                     <ul>
-                        <li><a asp-controller="Product" asp-action="Index">Tất cả sản phẩm</a></li>
-                        <li><a href="#">Thiết bị điện</a></li>
-                        <li><a href="#">Đồ gia dụng</a></li>
-                        <li><a href="#">Phụ kiện</a></li>
+                        <li><a href="Product/ProductsByCategory?categoryId=4">Quạt</a></li>
+                        <li><a href="Product/ProductsByCategory?categoryId=13">Nồi Cơm</a></li>
+                        <li><a href="Product/ProductsByCategory?categoryId=14">Máy Khoan</a></li>
+                        <li><a href="Product/ProductsByCategory?categoryId=12">Máy xay sinh tố</a></li>
+                        <li><a href="Product/ProductsByCategory?categoryId=9">Nồi, Bộ nồi</a></li>
+
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h4>Hỗ trợ</h4>
+                    <h4>Nhận trợ giúp</h4>
                     <ul>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Vận chuyển</a></li>
-                        <li><a href="#">Đổi trả</a></li>
-                        <li><a href="#">Thanh toán</a></li>
+                        <li><a href="Contact">Liên hệ</a></li>
+                        <li><a href="OrderHistory">Đơn hàng</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h4>Liên hệ</h4>
+                    <h4>company</h4>
                     <ul>
-                        <li><a href="#">Về chúng tôi</a></li>
-                        <li><a href="#">Liên hệ</a></li>
-                        <li><a href="#">Chính sách</a></li>
+                        <li><a asp-action="About" asp-controller="Home">Giới thiệu</a></li>
+                        <li><a asp-action="Contact" asp-controller="Home">Liên hệ</a></li>
+                        <li><a asp-action="ShowProduct" asp-controller="Product">Tất cả sản phẩm</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
                     <h4>Theo dõi chúng tôi</h4>
                     <div class="social-links">
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
                         <a href="#"><i class="fab fa-facebook-f"></i></a>
                         <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-tiktok"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
                     </div>
                 </div>
             </div>
             <hr>
-            <div class="copyright text-center">
-                <p>&copy; 2024 Tiệm điện Trần Duy. All rights reserved.</p>
-            </div>
         </div>
     </footer>
+    <!-- Chat Icon -->
+    <div class="chat-icon" onclick="toggleChatbox()">
+        <i class="fas fa-comments"></i>
+    </div>
 
-    <!-- Scripts -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <!-- Chatbox -->
+    <div id="chatbox-overlay" class="chatbox-hidden">
+        <div class="chatbox-header">
+            <h4>Trợ lý GPT</h4>
+            <i class="fas fa-times" onclick="toggleChatbox()"></i>
+        </div>
+        <div class="chatbox-body">
+            <div id="chatbox-messages" class="chatbox-messages"></div>
+            <form id="chatbox-form" enctype="multipart/form-data">
+                <input type="text" id="chatbox-input" placeholder="Nhập tin nhắn..." required />
+                <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                <!-- Nút tải ảnh -->
+                <label for="file-input" class="file-icon">
+                    <i class="fas fa-image"></i>
+                </label>
+                <input type="file" id="file-input" name="file" accept="image/*" style="display: none;" />
+            </form>
+        </div>
+    </div>
+
+    <!-- Styles -->
+
 
     <script>
-        var MenuItems = document.getElementById("MenuItems");
-        var MenuItem = document.getElementById("inneritems");
-        MenuItems.style.maxHeight = "0px";
-        MenuItem.style.display = "none";
-
-        function menutoggle() {
-            if (MenuItems.style.maxHeight == "0px") {
-                MenuItems.style.maxHeight = "200px";
-            } else {
-                MenuItems.style.maxHeight = "0px";
-            }
+        // Toggle khung chat
+        function toggleChatbox() {
+            const chatbox = document.getElementById('chatbox-overlay');
+            chatbox.classList.toggle('chatbox-visible');
         }
 
-        function menutoggl() {
-            if (MenuItem.style.display == "block") {
-                MenuItem.style.display = "none";
-            } else {
-                MenuItem.style.display = "block";
-            }
+        // Tự động cuộn xuống cuối khung chat
+        function scrollToBottom() {
+            const chatMessages = document.getElementById('chatbox-messages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
+
+        // Xử lý khi gửi tin nhắn
+        document.getElementById('chatbox-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const input = document.getElementById('chatbox-input');
+            const message = input.value.trim();
+
+            if (!message) return;
+
+            const chatMessages = document.getElementById('chatbox-messages');
+
+            // Hiển thị tin nhắn của người dùng
+            chatMessages.innerHTML += `<div class="message user"><p>${message}</p></div>`;
+            input.value = '';
+            scrollToBottom(); // Cuộn xuống cuối khung chat
+
+            try {
+                // Gửi tin nhắn qua AJAX
+                const response = await fetch('/ChatGPT/SendMessageAjax', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: new URLSearchParams({ userMessage: message }),
+                });
+
+                if (response.ok) {
+                    const gptResponse = await response.text();
+                    chatMessages.innerHTML += `<div class="message assistant"><p>${gptResponse}</p></div>`;
+                } else {
+                    chatMessages.innerHTML += `<div class="message assistant"><p>Lỗi kết nối!</p></div>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                chatMessages.innerHTML += `<div class="message assistant"><p>Có lỗi xảy ra!</p></div>`;
+            }
+
+            scrollToBottom(); // Cuộn xuống cuối khung chat sau khi nhận phản hồi
+        });
+
+        // Xử lý tải ảnh
+        document.getElementById("file-input").addEventListener("change", async function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const response = await fetch("/ChatGPT/UploadFile", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const chatMessages = document.getElementById("chatbox-messages");
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        // Hiển thị hình ảnh trong khung chat
+                        chatMessages.innerHTML += `
+                                            <div class="message assistant">
+                                                <p>Hình ảnh đã tải lên:</p>
+                                                <img src="${result.url}" alt="Uploaded Image" style="max-width: 100%; border-radius: 10px; margin-top: 5px;" />
+                                            </div>`;
+                    } else {
+                        chatMessages.innerHTML += `<div class="message assistant"><p>${result.message}</p></div>`;
+                    }
+                } else {
+                    chatMessages.innerHTML += `<div class="message assistant"><p>Lỗi tải file!</p></div>`;
+                }
+            } catch (error) {
+                console.error("Error uploading file:", error);
+                const chatMessages = document.getElementById("chatbox-messages");
+                chatMessages.innerHTML += `<div class="message assistant"><p>Có lỗi xảy ra khi tải file!</p></div>`;
+            }
+            scrollToBottom(); // Cuộn xuống cuối khung chat
+        });
+
+        function toggleMenu() {
+            const menu = document.getElementById('MenuItems');
+            menu.classList.toggle('menu-visible');
+        }
+
     </script>
+
+
+
+
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

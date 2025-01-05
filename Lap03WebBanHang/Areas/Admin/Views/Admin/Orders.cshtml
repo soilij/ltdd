@@ -1,0 +1,142 @@
+﻿@model IEnumerable<Lap03WebBanHang.Models.Order>
+@{
+    ViewData["Title"] = "Quản lý đơn hàng";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<h2>Danh sách đơn hàng</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Mã đơn hàng</th>
+            <th>Ngày tạo</th>
+            <th>Tổng giá trị</th>
+            <th>Tình trạng thanh toán</th>
+            <th>Tình trạng giao hàng</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@order.OrderDate.ToString("dd/MM/yyyy")</td>
+                <td>@order.TotalPrice.ToString("N0")</td>
+                <td>@order.PaymentMethod</td>
+                <td>@order.DeliveryStatus</td>
+                <td>
+                    <!-- Link xem chi tiết -->
+                    <a href="@Url.Action("Details", "Admin", new { id = order.Id })" class="btn btn-info">Xem chi tiết</a>
+
+
+                    <!-- Button để cập nhật trạng thái giao hàng -->
+                    <button type="button" class="btn btn-warning" onclick="updateOrderStatus(@order.Id)">Cập nhật</button>
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <script>
+                        function updateOrderStatus(orderId) {
+                            const status = document.getElementById(`status-${orderId}`).value; // Lấy trạng thái từ dropdown
+                            const url = '/Admin/UpdateOrderStatus/UpdateOrderStatus'; // Đường dẫn tới controller
+
+                            $.ajax({
+                                url: url,
+                                type: 'POST',
+                                data: { id: orderId, status: status },
+                                success: function (response) {
+                                    if (response.success) {
+                                        alert("Cập nhật thành công!");
+                                        location.reload();
+                                    } else {
+                                        alert(response.message || "Cập nhật thất bại!");
+                                    }
+                                },
+                                error: function () {
+                                    alert("Có lỗi xảy ra khi cập nhật!");
+                                }
+                            });
+                        }
+                    </script>
+
+                    <script>
+                        function updateOrderStatus(orderId) {
+                            const status = document.getElementById(`status-${orderId}`).value; // Lấy trạng thái được chọn
+                            const url = `/Admin/UpdateOrderStatus/UpdateOrderStatus`; // Đường dẫn tới action trong controller
+
+                            $.ajax({
+                                url: url,
+                                type: 'POST',
+                                data: { id: orderId, status: status },
+                                success: function (response) {
+                                    if (response.success) {
+                                        alert("Cập nhật thành công!");
+                                        location.reload(); // Tải lại trang nếu cần
+                                    } else {
+                                        alert(response.message || "Cập nhật thất bại!");
+                                    }
+                                },
+                                error: function () {
+                                    alert("Có lỗi xảy ra khi cập nhật!");
+                                }
+                            });
+                        }
+
+                    </script>
+
+
+
+                    <!-- Dropdown để chọn trạng thái giao hàng -->
+                    <select id="status-@order.Id" class="form-control">
+                        <option value="Pending" @(order.DeliveryStatus == "Pending" ? "selected" : "")>Chờ xử lý</option>
+                        <option value="Completed" @(order.DeliveryStatus == "Completed" ? "selected" : "")>Đã hoàn thành</option>
+                        <option value="Canceled" @(order.DeliveryStatus == "Canceled" ? "selected" : "")>Đã hủy</option>
+                        <option value="Chờ giao hàng" @(order.DeliveryStatus == "Chờ giao hàng" ? "selected" : "")>Chờ giao hàng</option>
+                    </select>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="pagination-container">
+    @if (ViewBag.TotalPages > 1)
+    {
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                @if (ViewBag.CurrentPage > 1)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Orders", new { page = ViewBag.CurrentPage - 1 })">&laquo; Trước</a>
+                    </li>
+                }
+
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    if (i == ViewBag.CurrentPage)
+                    {
+                        <li class="page-item active">
+                            <span class="page-link">@i</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a class="page-link" href="@Url.Action("Orders", new { page = i })">@i</a>
+                        </li>
+                    }
+                }
+
+                @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="@Url.Action("Orders", new { page = ViewBag.CurrentPage + 1 })">Tiếp &raquo;</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    }
+</div>
+
+
+

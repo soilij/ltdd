@@ -19,6 +19,6 @@ namespace Lap03WebBanHang.Repositories
         // Phương thức để lấy số lượng đã bán của một sản phẩm
         //Task<int> GetQuantitySoldAsync(int productId);
         Task<IEnumerable<Product>> GetSimilarProductsAsync(int productId); // Thêm phương thức này
-        Task<List<Product>> GetBestSellingProductsAsync(); //best selling
+        Task<List<ProductSales>> GetBestSellingProductsAsync(); //best selling
     }
 }

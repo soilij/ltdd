@@ -1,0 +1,80 @@
+﻿@model Lap03WebBanHang.ViewModel.OrderViewModel
+
+@{
+    ViewData["Title"] = "Chi tiết hóa đơn";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<div class="container mt-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+            <h2>Chi tiết hóa đơn</h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Thông tin khách hàng:</h5>
+                    <p><strong>Tên khách hàng:</strong> @Model.UserName</p> <!-- Sửa UserName -->
+                    <p><strong>Mã người dùng:</strong> @Model.UserId</p>
+                    <p><strong>Địa chỉ giao hàng:</strong> @Model.ShippingAddress</p>
+                    <p><strong>Số điện thoại nhận hàng:</strong> @Model.Phone</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Thông tin đơn hàng:</h5>
+                    <p><strong>Mã hóa đơn:</strong> @Model.Id</p>
+                    <p><strong>Ngày tạo:</strong> @Model.OrderDate.ToString("dd/MM/yyyy")</p>
+                    <p><strong>Phương thức thanh toán:</strong> @Model.PaymentMethod</p> <!-- Sửa PaymentMethod -->
+                </div>
+            </div>
+
+            <h5>Danh sách sản phẩm:</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Giá</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.OrderDetails.Any())
+                    {
+                        int index = 1;
+                        foreach (var item in Model.OrderDetails)
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td>@item.Product.Name</td>
+                                <td>@item.Quantity</td>
+                                <td>@item.Price.ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"))</td>
+                                <td>@((item.Quantity * item.Price).ToString("C0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")))</td>
+
+                            </tr>
+                            index++;
+                        }
+                    }
+                </tbody>
+            </table>
+
+            <div class="text-end">
+                <h4><strong>Tổng giá trị:</strong> @Model.TotalPrice.ToString("N0") VNĐ</h4>
+            </div>
+
+            <!-- Vị trí mã QR -->
+            <div class="row mt-4">
+                <div class="col-md-6 text-center">
+                    <h5>Mã QR hóa đơn:</h5>
+                    <img src="@Url.Action("GenerateQRCode", "Admin", new { area = "Admin", qrText = $"Hóa đơn: {Model.Id}\nKhách hàng: {Model.UserName}\nTổng tiền: {Model.TotalPrice.ToString("N0")} VNĐ" })"
+                         alt="QR Code" class="img-fluid border rounded shadow-sm" />
+                </div>
+            <!-- Nút In hóa đơn -->       
+            <div class="text-end mt-4" >
+                <button class="btn btn-success no-print" onclick="window.print()">In hóa đơn</button>
+            </div>
+
+        </div>
+    </div>
+</div>
