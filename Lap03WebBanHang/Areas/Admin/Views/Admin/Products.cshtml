@@ -1,0 +1,177 @@
+﻿@model IEnumerable<Lap03WebBanHang.Models.Product>
+
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid pt-4">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 d-flex justify-content-between align-items-center">
+            <h6 class="m-0 font-weight-bold text-primary">Quản lý sản phẩm</h6>
+            <a href="@Url.Action("Add", "Product", new { area = "" })" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus"></i> Thêm sản phẩm mới
+            </a>
+        </div>
+        <div class="card-body">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["Success"]
+                </div>
+            }
+            <div class="table-responsive">
+                <table class="table table-bordered" id="productTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Hình ảnh</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Danh mục</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="product-row" data-id="@item.Id">
+                                <td>@item.Id</td>
+                                <td>
+                                    <img src="@item.ImageUrl" alt="@item.Name" class="img-thumbnail" style="width: 50px; height: 50px; object-fit: cover;" />
+                                </td>
+                                <td>@item.Name</td>
+                                <td>@item.Price.ToString("N0") VNĐ</td>
+                                <td>@item.Category?.Name</td>
+                                <td>
+                                    <a href="@Url.Action("Update", "Product", new { area = "", id = item.Id })" class="btn btn-warning btn-light">
+                                        <i class="fas fa-edit"></i> Sửa
+                                    </a>
+                                    <a href="@Url.Action("Delete", "Product", new { area = "", id = item.Id })" class="btn btn-warning btn-danger">
+                                        <i class="fas fa-edit"></i> Xóa
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Links -->
+            <div class="pagination">
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <a href="@Url.Action("Products", "Admin", new { page = i, categoryId = ViewBag.SelectedCategoryId })" class="@(i == ViewBag.Page ? "active" : "")">
+                        @i
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="//cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#productTable').DataTable({
+                "language": {
+                    "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/vi.json"
+                }
+            });
+
+            // Xử lý sự kiện click vào dòng
+            $('#productTable tbody').on('click', 'tr', function (e) {
+                // Kiểm tra nếu click vào nút xóa thì không chuyển trang
+                if ($(e.target).closest('.btn-danger').length > 0) {
+                    return;
+                }
+
+                var id = $(this).data('id');
+                window.location.href = '@Url.Action("Update", "Product", new { area = "" })/' + id;
+            });
+
+            // Thêm hiệu ứng hover
+            $('#productTable tbody tr').hover(
+                function () {
+                    $(this).css('cursor', 'pointer');
+                    $(this).addClass('table-hover');
+                },
+                function () {
+                    $(this).removeClass('table-hover');
+                }
+            );
+        });
+
+        function confirmDelete(id, name) {
+            $('#productName').text(name);
+            $('#deleteForm').attr('action', '@Url.Action("DeleteProduct", "Admin", new { area = "Admin" })/' + id);
+            $('#deleteModal').modal('show');
+        }
+
+        @if (TempData["Success"] != null)
+        {
+            <text>
+                    $(document).ready(function() {
+                        toastr.success('@TempData["Success"]');
+                            });
+            </text>
+        }
+    </script>
+}
+
+@section Styles {
+    <link href="//cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+    <style>
+        .card {
+            border: none;
+            box-shadow: 0 0.15rem 1.75rem 0 rgb(58 59 69 / 15%);
+        }
+
+        .card-header {
+            background-color: #f8f9fc;
+            border-bottom: 1px solid #e3e6f0;
+        }
+
+        .table-responsive {
+            margin: 0;
+        }
+
+        .img-thumbnail {
+            padding: 0.25rem;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+        }
+
+        .table td {
+            vertical-align: middle;
+        }
+
+        /* Thêm style cho hover effect */
+        .table-hover {
+            background-color: rgba(0,0,0,.075) !important;
+        }
+
+        /* Ngăn text bị select khi double click */
+        .table tbody tr {
+            user-select: none;
+        }
+
+        .pagination {
+            margin-top: 20px;
+        }
+
+            .pagination a {
+                padding: 8px 16px;
+                margin: 0 4px;
+                border: 1px solid #ddd;
+                text-decoration: none;
+            }
+
+                .pagination a.active {
+                    background-color: #007bff;
+                    color: white;
+                }
+    </style>
+}

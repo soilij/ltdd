@@ -1,0 +1,97 @@
+﻿@{
+    ViewData["Title"] = "Manage Account";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold">Quản lý tài khoản</h2>
+        <p class="text-muted">Quản lý chi tiết tài khoản và tùy chọn của bạn.</p>
+    </div>
+
+    <!-- Account Details Section -->
+    <div class="card shadow-lg mb-5">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i>  Chi tiết tài khoản</h5>
+            <a href="~/Identity/Account/Manage" class="btn btn-outline-light btn-sm">
+                <i class="fas fa-edit"></i> Chỉnh sửa tài khoản
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Username:</strong> @User.Identity?.Name</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Email:</strong> @User.FindFirst("email")?.Value</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Joined:</strong> @User.FindFirst("created_at")?.Value ?? "N/A"</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <form method="post" action="~/Identity/Account/Logout" class="d-inline">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-power-off me-2"></i> Đăng xuất
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order History Section -->
+    <div class="card shadow-lg">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0"><i class="fas fa-history me-2"></i> Lịch sử đặt hàng</h5>
+        </div>
+        <div class="card-body">
+            <p>
+                Xem lịch sử và chi tiết đơn hàng của bạn.</p>
+            <a href="@Url.Action("Index", "OrderHistory")" class="btn btn-success">
+                <i class="fas fa-receipt me-2"></i> Xem lịch sử đặt hàng
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container {
+        max-width: 800px;
+        padding-bottom: 100px;
+    }
+
+    .card {
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+    .btn {
+        border-radius: 5px;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-outline-light {
+        color: #fff;
+        border: 1px solid #fff;
+    }
+
+        .btn-outline-light:hover {
+            background-color: #fff;
+            color: #007bff;
+        }
+</style>

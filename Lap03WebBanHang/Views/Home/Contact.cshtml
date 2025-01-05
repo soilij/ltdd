@@ -1,0 +1,101 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="account-page">
+    <div class="container">
+        <div style="text-align:center">
+            <h2>Liên hệ với chúng tôi</h2>
+            <p>Bạn có thể hỏi bất cứ điều gì liên quan đến cửa hàng của chúng tôi.</p>
+        </div>
+        <div class="row">
+            <div class="column">
+                <!-- Form gửi email -->
+                <form asp-controller="Contact" asp-action="SendEmail" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <label for="fname">Tên</label>
+                    <input type="text" id="fname" name="firstname" placeholder="Hãy điền tên của bạn." required>
+
+                    <label for="lname">Số điện thoại</label>
+                    <input type="number" id="lname" name="lastname" placeholder="Số điện thoại liên hệ." required>
+
+                    <label for="country">Lý do</label>
+                    <select id="country" name="country" required>
+                        <option value="Mua Hàng">Mua</option>
+                        <option value="Bán Hàng">Bán</option>
+                        <option value="Quảng Cáo">Quảng cáo</option>
+                        <option value="Đặt Hàng">Đặt hàng</option>
+                    </select>
+
+                    <label for="subject">Chủ đề</label>
+                    <textarea id="subject" name="subject" placeholder="Nhập nội dung liên hệ..." style="height:170px" required></textarea>
+
+                    <input type="submit" value="Gửi liên hệ">
+                </form>
+            </div>
+            <div class="column">
+                <!-- Bản đồ Google -->
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d980.9512381208094!2d105.66513556961712!3d10.437047018271524!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x310a650066a3d813%3A0xaa89dd66abe07f82!2zVGnhu4dtIMSRaeG7h24gVHLhuqduIER1eQ!5e0!3m2!1svi!2s!4v1735025782010!5m2!1svi!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .account-page {
+        padding: 50px 0;
+        margin-bottom: 75px;
+    }
+
+    .container {
+        max-width: 1170px;
+        margin: auto;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .column {
+        flex: 50%;
+        padding: 10px;
+    }
+
+    input[type=text], input[type=number], select, textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-top: 6px;
+        margin-bottom: 16px;
+        resize: vertical;
+    }
+
+    input[type=submit] {
+        background-color: #ff523b;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+        input[type=submit]:hover {
+            background-color: #ff7845;
+        }
+
+    label {
+        font-weight: bold;
+    }
+
+    iframe {
+        width: 100%;
+        height: 450px;
+        border: 0;
+    }
+</style>

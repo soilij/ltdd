@@ -1,0 +1,32 @@
+﻿@model Lap03WebBanHang.Models.Order
+
+<div class="container mt-4">
+    <h2 class="text-center">Chi tiết đơn hàng #@Model.Id</h2>
+    <p><strong>Ngày đặt:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+    <p><strong>Số điện thoại nhận hàng: </strong>@Model.Phone</p>
+    <p><strong>Tổng tiền:</strong> @Model.TotalPrice.ToString("N0") VNĐ</p>
+    <p><strong>Địa chỉ giao hàng:</strong> @Model.ShippingAddress</p>
+    <p><strong>Ghi chú:</strong> @Model.Notes</p>
+    <p><strong>Trạng thái giao hàng:</strong> @Model.DeliveryStatus</p>
+
+    <h3>Chi tiết sản phẩm</h3>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tên sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Giá</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detail in Model.OrderDetails)
+            {
+                <tr>
+                    <td>@detail.Product.Name</td>
+                    <td>@detail.Quantity</td>
+                    <td>@detail.Price.ToString(".000") VNĐ</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

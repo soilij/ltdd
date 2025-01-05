@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Nhập hàng";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1 class="mt-4 mb-3 text-center">Nhập hàng</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="ImportStock" asp-controller="Admin" method="post">
+            <div class="form-group">
+                <label for="ProductId">Chọn sản phẩm</label>
+                <select class="form-control" id="ProductId" name="productId" required>
+                    <option value="">-- Chọn sản phẩm --</option>
+                    @foreach (var product in ViewBag.Products as SelectList)
+                    {
+                        <option value="@product.Value">@product.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="SupplierId">Chọn nhà cung cấp</label>
+                <select class="form-control" id="SupplierId" name="supplierId" required>
+                    <option value="">-- Chọn nhà cung cấp --</option>
+                    @foreach (var supplier in ViewBag.Suppliers as SelectList)
+                    {
+                        <option value="@supplier.Value">@supplier.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Quantity">Số lượng nhập</label>
+                <input type="number" class="form-control" id="Quantity" name="quantity" min="1" required />
+            </div>
+
+            <div class="form-group">
+                <label for="Price">Giá nhập (VNĐ)</label>
+                <input type="number" class="form-control" id="Price" name="price" min="1" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Nhập hàng</button>
+            <a asp-action="Warehouse" asp-controller="Admin" class="btn btn-secondary">Quay lại</a>
+        </form>
+    </div>
+</div>

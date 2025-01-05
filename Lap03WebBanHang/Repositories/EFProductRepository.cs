@@ -76,17 +76,22 @@ namespace Lap03WebBanHang.Repositories
 
             return similarProducts;
         }
-        public async Task<List<Product>> GetBestSellingProductsAsync()
+        public async Task<List<ProductSales>> GetBestSellingProductsAsync()
         {
-            // Lấy top 6 sản phẩm bán chạy nhất
+            // Lấy dữ liệu từ OrderDetails và tính tổng số lượng bán cho từng sản phẩm
             return await _context.OrderDetails
-                .GroupBy(od => od.ProductId)
-                .OrderByDescending(g => g.Sum(od => od.Quantity))
-                .Take(6)
-                .Select(g => g.Key) // Chọn ProductId của sản phẩm bán chạy nhất
-                .Join(_context.Products, id => id, p => p.Id, (id, p) => p) // Lấy thông tin sản phẩm từ ProductId
-                .ToListAsync();
+                .GroupBy(od => od.ProductId) // Nhóm theo ProductId để tính tổng số lượng bán
+                .OrderByDescending(g => g.Sum(od => od.Quantity)) // Sắp xếp theo tổng số lượng bán giảm dần
+                .Take(6) // Lấy 6 sản phẩm bán chạy nhất
+                .Select(g => new ProductSales
+                {
+                    Product = g.FirstOrDefault().Product, // Lấy thông tin sản phẩm (có thể dùng FirstOrDefault() hoặc bất kỳ cách nào để lấy sản phẩm)
+                    QuantitySold = g.Sum(od => od.Quantity) // Tổng số lượng bán
+                })
+                .ToListAsync(); // Chuyển kết quả thành danh sách
         }
+
+
 
 
 

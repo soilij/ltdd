@@ -1,30 +1,164 @@
-﻿@model IEnumerable<Lap03WebBanHang.Models.Product>
+﻿@model Lap03WebBanHang.ViewModel.HomeViewModels
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Trang chủ";
     var bestSellingProducts = ViewBag.BestSellingProducts as List<Lap03WebBanHang.Models.Product> ?? new List<Lap03WebBanHang.Models.Product>();
 }
+@if (ViewBag.SuccessMessage != null)
+{
+    <div id="notification-modal" class="notification-modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <p>@ViewBag.SuccessMessage</p>
+        </div>
+    </div>
+}
 
-<div class="container">
+<style>
+    /* Bố cục bảng thông báo (popup) */
+    .notification-modal {
+        display: flex;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(0, 0, 0, 0.5); /* Hiệu ứng nền tối */
+        z-index: 1000;
+        opacity: 1;
+        transition: opacity 0.5s ease-out;
+    }
+
+    .modal-content {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        position: relative;
+        animation: scale-up 0.3s ease-out;
+    }
+
+    .modal-content p {
+        margin: 0;
+        font-size: 18px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        cursor: pointer;
+        color: #aaa;
+        transition: color 0.2s;
+    }
+
+    .close-btn:hover {
+        color: #333;
+    }
+
+    /* Hiệu ứng phóng to bảng */
+     scale-up {
+        0% {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+</style>
+
+<script>
+    // Tự động ẩn bảng thông báo sau 3 giây
+    setTimeout(() => {
+        const modal = document.getElementById('notification-modal');
+        if (modal) {
+            modal.style.opacity = 0; // Hiệu ứng mờ dần
+            setTimeout(() => modal.remove(), 500); // Xóa bảng sau khi mờ
+        }
+    }, 3000); // 3 giây
+
+    // Đóng bảng thông báo khi bấm nút "x"
+    document.addEventListener('DOMContentLoaded', () => {
+        const closeBtn = document.querySelector('.close-btn');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                const modal = document.getElementById('notification-modal');
+                if (modal) {
+                    modal.style.opacity = 0;
+                    setTimeout(() => modal.remove(), 500);
+                }
+            });
+        }
+    });
+</script>
+
+
+<div class="row">
+    <div class="col-2">
+        <h1>Khám Phá Những Thiết Bị Gia Dụng Tốt Nhất <br />Cho Ngôi Nhà Của Bạn!</h1>
+        <p>
+            "Trang bị cho gia đình bạn những thiết bị tiên tiến nhất. Từ những chiếc máy giặt thông minh, đến các thiết bị nhà bếp hiện đại – chúng tôi luôn mang đến sản phẩm chất lượng để nâng cao cuộc sống của bạn."
+        </p>
+        <a asp-action="ShowProduct" asp-controller="Product" class="btn">Mua Ngay &#10140;</a>
+    </div>
+    <div class="col-2">
+        <img src="https://seeyashop.netlify.app/images/image1.png" alt="Sản phẩm điện gia dụng" />
+    </div>
+</div>
+
+
+<!-- Featured Categories -->
+<div class="small-container">
+    <h2 class="title">Loại sản phẩm</h2>
     <div class="row">
-        @foreach (var product in Model)
+        @foreach (var category in Model.Categories)
         {
-            <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
-                    <img class="card-img-top" src="@product.ImageUrl" alt="@product.Name" />
-                    <div class="card-body">
-                        <h5 class="card-title">@product.Name</h5>
-                        <p class="card-text">@product.Description</p>
-                        <p class="card-text">Giá: @product.Price.ToString(".000") VNĐ</p>
-                        <div class="text-center">
-                            <a asp-controller="Product" asp-action="Display" asp-route-id="@product.Id"
-                               class="btn btn-primary">Xem chi tiết</a>
-                            <a asp-controller="ShoppingCart" asp-action="AddToCart"
-                               asp-route-productId="@product.Id" asp-route-quantity="1"
-                               class="btn btn-success">Thêm vào giỏ</a>
-                        </div>
-                    </div>
-                </div>
+            <div class="col-4">
+                <img src="@category.ImageUrlCate" alt="@category.Name" />
+                <h4><a href="@Url.Action("ProductsByCategory", "Product", new { categoryId = category.Id })">@category.Name</a></h4>
+                <p><a href="@Url.Action("ProductsByCategory", "Product", new { categoryId = category.Id })">Xem thêm...</a></p>
             </div>
         }
     </div>
 </div>
+
+    <!-- Featured Products -->
+    <div>
+    <h2 class="title">Sản phẩm nổi bật</h2>
+    <div class="row">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col-4">
+                <img src="@product.ImageUrl" alt="@product.Name" />
+                <h4><a href="@Url.Action("Details", "Product", new { id = product.Id })">@product.Name</a></h4>
+                <p>@product.Price.ToString("N0") VNĐ</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Offer Section -->
+<div class="offer">
+    <div class="small-container">
+        <div class="row">
+            <div class="col-2">
+                <img style="background:none" src="~/images/QuatOffer.png" class="offer-img">
+            </div>
+            <div class="col-2">
+                <p>Chỉ có tại Trần Duy Shop</p>
+                <h1>Quạt Điện Cầm Tay</h1>
+                <small>Quạt Điện Cầm Tay BMC KT-125 với thiết kế nhỏ gọn, có 3 chế độ gió, đi kèm với giá đỡ điện thoại, cổng USB, khe cắm thẻ nhớ và kết nối Bluetooth (KT-125)</small><br>
+                <a href="#" class="btn">Mua Ngay &#10140;</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+

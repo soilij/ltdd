@@ -1,0 +1,15 @@
+﻿@model IEnumerable<Lap03WebBanHang.Models.Product>
+
+<div class="small-container">
+    <h2 class="title">Products in @ViewBag.CategoryName</h2>
+    <div class="row">
+        @foreach (var product in Model)
+        {
+            <div class="col-4">
+                <img src="@product.ImageUrl" alt="@product.Name" />
+                <h4><a href="@Url.Action("Details", "Product", new { id = product.Id })">@product.Name</a></h4>
+                <p>@product.Price.ToString("N0") VNĐ</p>
+            </div>
+        }
+    </div>
+</div>

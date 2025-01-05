@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Lap03WebBanHang.Models.Warehouse>
+
+@{
+    ViewBag.Title = "Thông báo sản phẩm gần hết hàng";
+    Layout = "/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h1 class="text-center">@ViewBag.Title</h1>
+
+<div class="table-responsive mt-4">
+    <table class="table table-bordered table-striped text-center">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>Sản phẩm</th>
+                <th>Số lượng tồn kho</th>
+                <th>Mức tối thiểu</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                int index = 1;
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@index</td>
+                        <td>@(item.Product?.Name ?? "N/A")</td>
+                        <td>@item.QuantityInStock</td>
+                        <td>@item.ReorderLevel</td>
+                    </tr>
+                    index++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center text-danger">Không có sản phẩm nào gần hết hàng.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

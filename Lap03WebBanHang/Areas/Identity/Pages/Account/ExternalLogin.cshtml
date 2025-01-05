@@ -1,0 +1,47 @@
+﻿@page
+@model ExternalLoginModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg rounded border-0">
+                <div class="card-body p-5">
+                    <h2 class="text-center text-primary mb-4">Associate your @Model.ProviderDisplayName account</h2>
+                    <p class="text-center text-muted">
+                        You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
+                        Please provide the required information below and click <strong>Register</strong> to finish logging in.
+                    </p>
+                    <hr />
+
+                    <form asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                        <!-- Full Name -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.FullName" class="form-control" placeholder="Please enter your full name" />
+                            <label asp-for="Input.FullName" class="form-label">Full Name</label>
+                            <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-floating mb-3">
+                            <input asp-for="Input.Email" class="form-control" autocomplete="email" placeholder="Please enter your email." />
+                            <label asp-for="Input.Email" class="form-label">Email</label>
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Register Button -->
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill py-2">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

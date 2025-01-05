@@ -1,0 +1,33 @@
+﻿@using Lap03WebBanHang.Models.Momo
+@model MomoInfoModel
+
+<h2>Kết quả thanh toán</h2>
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success">@TempData["success"]</div>
+}
+
+@if (TempData["error"] != null)
+{
+    <div class="alert alert-danger">@TempData["error"]</div>
+}
+
+@if (Model != null)
+{
+    <p><strong>Order ID:</strong> @Model.OrderId</p>
+    <p><strong>Full Name:</strong> @Model.FullName</p>
+
+    <!-- Hiển thị Amount nếu có giá trị -->
+    <p><strong>Amount:</strong> @(Model.Amount.HasValue ? Model.Amount.Value.ToString("C") : "Không có thông tin")</p>
+
+    <p><strong>Order Info:</strong> @Model.OrderInfo</p>
+
+    <!-- Hiển thị DatePaid nếu có giá trị -->
+    <p><strong>Date Paid:</strong> @(Model.DatePaid.HasValue ? Model.DatePaid.Value.ToString("dd/MM/yyyy HH:mm:ss") : "Không có thông tin")</p>
+}
+else
+{
+    <p>Không có thông tin giao dịch để hiển thị.</p>
+}
+<h2>Cảm ơn bạn đã mua hàng tại cửa hàng chúng tôi!!!</h2>

@@ -1,11 +1,6 @@
 ﻿@page
 @model RegisterModel
-@{
-    ViewData["Title"] = "Đăng kí";
-}
-
-<h1>@ViewData["Title"]</h1>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
@@ -34,19 +29,26 @@
                         <input asp-for="Input.ConfirmPassword" id="Input_ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
                         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                     </div>
+                </div>
+
+                <!-- Role Selection -->
+                <div class="form-group">
+                    <label for="Input_Role">Vai trò</label>
+                    <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-control">
+                        <option disabled selected>-Chọn vai trò-</option>
+                    </select>
+                </div>
+
+                <!-- Admin Key (Hidden) -->
+                <div id="adminKeyForm" style="display:none;">
                     <div class="form-group">
-                        <label for="Input_Role">Vai trò</label>
-                        <select asp-for="Input.Role" asp-items="@Model.Input.RoleList" class="form-control">
-                            <option disabled selected>-Chọn vai trò-</option>
-                        </select>
+                        <label for="adminKey">Mã quản trị</label>
+                        <input type="password" class="form-control" id="adminKey" placeholder="Mã quản trị">
                     </div>
-                    <div id="adminKeyForm" style="display:none;">
-                        <div class="form-group">
-                            <label for="adminKey">Mã quản trị</label>
-                            <input type="text" class="form-control" id="adminKey" placeholder="Mã quản trị">
-                        </div>
-                    </div>
-                    <button id="registerSubmit" type="submit" class="btn btn-primary btn-block">Đăng ký</button>
+                </div>
+
+                <div class="form-group">
+                    <button id="registerSubmit" type="submit" class="btn btn-primary w-100">Đăng ký</button>
                 </div>
             </form>
         </div>
@@ -56,33 +58,43 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
+            // Hiển thị/ẩn trường Mã quản trị khi người dùng chọn vai trò
             $('#Input_Role').change(function () {
-                if ($(this).val() === 'Admin') {
-                    $('#adminKeyForm').show();
+                var selectedRole = $(this).val();
+                if (selectedRole === 'Admin') {
+                    $('#adminKeyForm').show();  // Hiển thị ô mã quản trị khi chọn "Admin"
                 } else {
-                    $('#adminKeyForm').hide();
+                    $('#adminKeyForm').hide();  // Ẩn ô mã quản trị khi chọn vai trò khác
                 }
             });
 
-            $('#registerSubmit').click(function () {
-                var role = $('#Input_Role').val();
-                if (role === 'Admin') {
+            // Gửi form nếu kiểm tra mã quản trị thành công
+            $('#registerForm').on('submit', function (e) {
+                e.preventDefault();
+                var selectedRole = $('#Input_Role').val();
+                if (selectedRole === 'Admin') {
                     var adminKey = $('#adminKey').val();
-                    // Kiểm tra key
-                    if (adminKey === '123456') {
-                        // Thực hiện tạo tài khoản
-                        $('#registerForm').submit();
-                    } else {
-                        // Hiển thị thông báo lỗi
-                        alert('Invalid admin key. Please try again.');
-                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: '/register/check-admin-key',
+                        data: { adminKey: adminKey },
+                        success: function (response) {
+                            if (response.isValid) {
+                                $('#registerForm')[0].submit();  // Gửi form nếu mã hợp lệ
+                            } else {
+                                alert('Mã quản trị không hợp lệ.');
+                            }
+                        },
+                        error: function () {
+                            alert('Có lỗi xảy ra.');
+                        }
+                    });
                 } else {
-                    // Nếu không phải role Admin, thực hiện tạo tài khoản
-                    $('#registerForm').submit();
+                    $('#registerForm')[0].submit();  // Gửi form nếu không chọn "Admin"
                 }
             });
         });
     </script>
 }
 
-    <partial name="_ValidationScriptsPartial" />
+<partial name="_ValidationScriptsPartial" />

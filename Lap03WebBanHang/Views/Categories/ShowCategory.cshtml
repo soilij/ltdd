@@ -1,0 +1,10 @@
+﻿@model Lap03WebBanHang.Models.Category
+
+<h2>Danh mục: @Model.Name</h2>
+
+<ul>
+    @foreach (var product in Model.Products)
+    {
+        <li>@product.Name - @product.Price</li>
+    }
+</ul>

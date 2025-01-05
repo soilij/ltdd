@@ -1,14 +1,28 @@
-﻿@model int
+﻿@model Lap03WebBanHang.Models.Order
+
 <div class="container mt-5">
     <div class="row">
         <div class="col-md-6 offset-md-3">
             <div class="card">
                 <div class="card-body text-center">
                     <h2 class="card-title">Đơn hàng đã được đặt thành công</h2>
-                    <p class="card-text">Đơn hàng của bạn với mã số <strong>@Model</strong> đã được đặt thành công.</p>
+                    <p class="card-text">Đơn hàng của bạn với mã số <strong>@Model.Id</strong> đã được đặt thành công. Bạn vui lòng chọn phương thức thanh toán</p>
                 </div>
             </div>
         </div>
     </div>
+    <div class="form-group">
+        <form method="POST" asp-action="CreatePaymentUrl" asp-controller="Payment">
+            <input type="hidden" name="amount" value="@Model.TotalPrice" />
+            <input type="hidden" name="orderId" value="Mã khách hàng: @Model.Id" />
+            <input type="hidden" name="orderInfomation" value="@Model.ShippingAddress" />
+            <input type="hidden" name="FullName" value="Thanh toan mua hang tai tiem dien Tran Duy" />
+            <button class="btn btn-danger" name="PayUrl" type="submit">Thanh toán qua MOMO</button>
+        </form>
+        <!-- Nút thanh toán bằng tiền mặt -->
+        <form method="POST" asp-action="PayWithCash" asp-controller="Payment">
+            <input type="hidden" name="orderId" value="@Model.Id" />
+            <button class="btn btn-success mt-3" type="submit">Thanh toán bằng tiền mặt</button>
+        </form>
+    </div>
 </div>
-

@@ -1,0 +1,97 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- ---------ABOUT-------- -->
+<div class="container-fluid">
+<div class="account-page">
+    <section class="page-section" id="about">
+        <div class="container">
+            <div class="text-center">
+                    <h2 class="section-heading text-uppercase">Về chúng tôi</h2>
+                    <h3 class="section-subheading text-muted">
+                        Một số thông tin về cửa hàng của chúng tôi.
+                    </h3>
+            </div>
+            <ul class="timeline">
+                <li>
+                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="images" alt=""></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4>2018-2020</h4>
+                                <h4 class="subheading">Giá trị và niềm tin</h4>
+                        </div>
+                            <div class="timeline-body"><p class="text-muted">Chúng tôi đối xử với khách hàng như thần. Doanh số tốt do kinh doanh lợi nhuận thấp, khách hàng hài lòng với chúng tôi vì giá cả</p></div>
+                    </div>
+                </li>
+                <li class="timeline-inverted">
+                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="images" alt=""></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4>2020-2022</h4>
+                                <h4 class="subheading">Xây dựng kết nối</h4>
+                        </div>
+                            <div class="timeline-body"><p class="text-muted">Chúng tôi đối xử với khách hàng như thần. Doanh số tốt do kinh doanh lợi nhuận thấp, khách hàng hài lòng với chúng tôi vì giá cả</p></div>
+                    </div>
+                </li>
+                @* <li> *@
+                @*     <div class="timeline-image"><img class="rounded-circle img-fluid" src="images" alt=""></div> *@
+                @*     <div class="timeline-panel"> *@
+                @*         <div class="timeline-heading"> *@
+                @*             <h4>2012-2022</h4> *@
+                @*             <h4 class="subheading">Certifications, Awards</h4> *@
+                @*         </div> *@
+                @*         <div class="timeline-body"><p class="text-muted">We are treat the customer as god. Sales are good due to low profit business, customers are satisfied with us because of the price</p></div> *@
+                @*     </div> *@
+                @* </li> *@
+                <li class="timeline-inverted">
+                    <div class="timeline-image"><img class="rounded-circle img-fluid" src="images" alt=""></div>
+                    <div class="timeline-panel">
+                        <div class="timeline-heading">
+                            <h4>2024-</h4>
+                                <h4 class="subheading">Thật tuyệt vời!</h4>
+                        </div>
+                            <div class="timeline-body"><p class="text-muted">Chúng tôi đối xử với khách hàng như thần. Doanh số tốt do kinh doanh lợi nhuận thấp, khách hàng hài lòng với chúng tôi vì giá cả</p></div>
+                    </div>
+                </li>
+                <li class="timeline-inverted">
+                    <div class="timeline-image">
+                        <h4>
+                                Hãy là một phần
+                            <br>
+                                của cửa hàng của chúng tôi
+                        </h4>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+</div>
+</div>
+<style>
+    .container-fluid{
+        margin-bottom: 75px; /* Thêm khoảng cách với footer */
+    }
+</style>
+
+<!-- -------js for toggle menu----- -->
+<script>
+    var MenuItems = document.getElementById("MenuItems");
+    var MenuItem = document.getElementById("inneritems");
+    MenuItems.style.maxHeight = "0px";
+
+    function menutoggle() {
+        if (MenuItems.style.maxHeight == "0px") {
+            MenuItems.style.maxHeight = "200px";
+        } else {
+            MenuItems.style.maxHeight = "0px";
+        }
+    }
+    function menutoggl() {
+        if (MenuItem.style.display == "block") {
+            MenuItem.style.display = "none";
+        } else {
+            MenuItem.style.display = "block";
+        }
+    }
+</script>

@@ -1,0 +1,44 @@
+#sidebar-wrapper {
+    width: 250px;
+    background: #4e73df;
+    color: white;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 999;
+    transition: all 0.3s ease;
+}
+
+#page-content-wrapper {
+    margin-left: 250px;
+    width: 100%;
+}
+
+#sidebar-wrapper .list-group-item {
+    background: #4e73df;
+    color: white;
+    border: none;
+}
+
+    #sidebar-wrapper .list-group-item:hover {
+        background-color: #3e5ad4;
+    }
+
+#sidebar-toggle {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    #sidebar-wrapper {
+        margin-left: -250px;
+    }
+
+    #page-content-wrapper {
+        margin-left: 0;
+    }
+
+    #sidebar-toggle {
+        display: block;
+    }
+}
